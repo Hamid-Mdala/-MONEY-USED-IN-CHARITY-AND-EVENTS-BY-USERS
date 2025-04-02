@@ -1,0 +1,1 @@
+add_library(GenericMap hashMap.c hashMap.h)
