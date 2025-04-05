@@ -98,21 +98,6 @@ bool first_page() {
   return functionalitiesAfterNavigationDashboard(choice, stored_field1);
 }
 bool before_navigation_dashboard(char *phone_number) {
-  exists = search_for_field("user_data.txt", value);
-  if(exists) {
-    printf("2. BUNDLES");
-    printf("3. PAY BILLS");
-    printf("4. SEND CASH");
-    printf("5. VIEW ACCOUNT DETAILS");
-    printf("6. VIEW/BOOK INTO EVENTS");
-    printf("7. EXIT");
-    printf("Enter your choice option: ");
-    scanf("%d", &choice);
-
-
-  } else {
-
-  }
   printf("1. continue\n");
   printf("2. EXIT\n");
   printf("Enter your choice option: ");
