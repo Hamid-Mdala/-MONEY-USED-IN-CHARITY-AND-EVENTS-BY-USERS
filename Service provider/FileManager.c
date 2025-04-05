@@ -149,7 +149,7 @@ char *search_for_field(char *filename, char details_field[10]) {
             char *field7 = strtok(NULL, ",");
             char *field8 = strtok(NULL, "\n");
             if (strcmp(field1, details_field) == 0) {
-                return field8;
+                return field8;    //return phone number 
             }
         } return false;
     }
