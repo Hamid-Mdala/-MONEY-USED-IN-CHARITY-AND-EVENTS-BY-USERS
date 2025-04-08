@@ -11,11 +11,11 @@ bool validateUsername(char *username){
     }
   }
 }
-bool validatePin(char *pin){
-  if(pin == NULL){
+bool validatePassword(char *password){
+  if(password == NULL){
     return false;
   } else {
-    if(strlen(pin) > 10 && strlen(pin) <= 20) {
+    if(strlen(password) > 10) {
       return true;
     } else {
       return false;

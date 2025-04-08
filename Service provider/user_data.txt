@@ -1,1 +1,8 @@
-Admin_User1,password123,ADM_USERNUM1,HAMID,MDALA,M,26-10-2008,0994500600
+service provider,The username must be unique
+we could contain these in the query file once we register our user
+enter your username and then we could compare if th
+will check if the service provider and username until the underscore is contained in the query User_(username);
+HAMIDMDALA123,PASSWORD1234,HAMID_MDALA123,HAMDI,MDALA,M,26-10-2008,0994500600
+The name could contain underscore when registering
+//
+How will i extract until the first underscore

@@ -5,14 +5,14 @@
 // Forward declaration of UserDetails struct
 struct user_details {
     // declaring the variables inside struct
-        char *username;
-        char *pin;
-        char *id;
-        char *first_name;
-        char *last_name;
-        char *gender;
-        char *dob;
-        char *phone_number;
+        char *details_field1;
+        char *details_field2;
+        char *details_field3;
+        char *details_field4;
+        char *details_field5;
+        char *details_field6;
+        char *details_field7;
+        char *details_field8;
 };
 
 // Map Initialization in C

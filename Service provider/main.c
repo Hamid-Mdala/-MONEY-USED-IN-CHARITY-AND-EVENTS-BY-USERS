@@ -4,26 +4,42 @@
 #include "ValidationCheck.h"
 #include <stdbool.h>
 #include "implementationAfterSearch.h"
+#include "map.h"
+#include <string.h>
 bool exists;
 int choice;
 char phone_number[10];
 const char value[20] = "user";
+bool make_search_query() {
+  FILE* fptr = fopen("Query.txt", "r");
+  if(fptr == NULL) {
+    printf("Error: Unable to open the Query file");
+  } else {
+    char line[300];
+    while(fgets(line, sizeof(line), fptr)) {
+      const char *field1 = strtok(line, ",");
+      const char *field2 = strtok(NULL, "\n");
+      if(strstr(field2, "User_") != NULL) {
+        return true;
+      }
+    } return false;
+  }return true;
+}
 void registration_form() {
   //registration_form
-  printf("Welcome to the reliable internet service provider system.\n");
-  printf("To use these service, please register the required details\n");
   char username[100];
   printf("Enter username: ");
   scanf("%s", username);
+  sprintf(username, "User_%s", username);
   exists = validateUsername(username);
   if(exists) {
-    char pin[20];
+    char pin[100];
     printf("Enter password: ");
-    scanf("%d", pin);
+    scanf("%s", pin);
     exists = validatePin(pin);
     if(exists) {
       char id[100];
-      printf("Enter admin-ID: ");
+      printf("Enter ID: ");
       scanf("%s", id);
       exists = validateId(id);
       if(exists) {
@@ -51,126 +67,68 @@ void registration_form() {
                 scanf("%s", phone_number);
                 exists = validatePhoneNumber(phone_number);
                 if(exists) {
-                  exists = search_for_field("user_data.txt", phone_number);
-                  if(exists) {
-                    printf("The phone number already exists in the user data");
+                  exists = search_for_field(phone_number, "user_data.txt");
+                  if (exists) {
+                    printf("The phone doesn't belong to you, someone is having these number in our records.\n");
+                  } else {
+                    register_user(username, pin, id, first_name, last_name, gender, dob, phone_number);
                   }
-                  register_user(username, pin, id, first_name, last_name, gender, dob, phone_number, value);
                 } else {
-                  printf("Invalid phone number.\n");
+                  printf("Error: Invalid phone number.\n");
                 }
               } else {
-                printf("Invalid date of birth.\n");
+                printf("Error: Invalid date of birth.\n");
               }
             } else {
-              printf("Invalid gender.\n");
+              printf("Error: Invalid gender.\n");
             }
           } else {
-            printf("Invalid last name.\n");
+            printf("Error: Invalid last name.\n");
           }
         } else {
-          printf("Invalid first name.\n");
+          printf("Error: Invalid first name.\n");
         }
       } else {
-        printf("Invalid ID.\n");
+        printf("Error: Invalid ID.\n");
       }
     } else {
-      printf("Invalid password.\n");
+      printf("Error: Invalid password.\n");
     }
   } else {
-    printf("Invalid username.\n");
+    printf("Error: Invalid username.\n");
   }
 }
 
 bool first_page() {
-  printf("Welcome to the most reliable internet service provider's navigation dashboard.\n");
-  printf("1. buy bundles\n");
-  printf("2. pay bills\n");
-  printf("3. send cash to another number\n");
-  printf("4. view account details\n");
-  printf("5. view/book into events\n");
-  printf("6. services\n");
-  printf("7. EXIT\n");
   printf("Enter your choice option: ");
   scanf("%d", &choice);
   system("CLS");
-  char *stored_field1 = search_for_field("user_data.txt", phone_number); //get the return
-  return functionalitiesAfterNavigationDashboard(choice, stored_field1);
+  char *filename;
+  char *details_field8;
+  return functionalitiesAfterNavigationDashboard(choice, details_field8, filename);
 }
-bool before_navigation_dashboard(char *phone_number) {
-  printf("1. continue\n");
-  printf("2. EXIT\n");
-  printf("Enter your choice option: ");
-  scanf("%d", &choice);
-  system("CLS");
-  if(choice == 1)  {
-    printf("Enter your phone number: ");
-    scanf("%s", phone_number);
-    exists = validatePhoneNumber(phone_number);
-    if(exists) {
-      exists = search_for_field("user_data.txt", phone_number);
-      if(exists) {
-        while(true) {
-          printf("To claim that you are the owner of this number\n");
-          printf("1. continue\n");
-          printf("2. EXIT\n");
-          printf("Enter your choice option: ");
-          scanf("%d", &choice);
-          system("CLS");
-          if(choice == 1) {
-            char username[20];
-            printf("Enter your username: ");
-            scanf("%s", username);
-            exists = validateUsername(username);
-            if(exists) {
-              char pin[20];
-              printf("Enter your password: ");
-              scanf("%s", pin);
-              exists = validatePin(pin);
-              system("CLS");
-              if(exists) {
-                exists = authenticate("user_data.txt", username, pin, 7);
-                if(exists) {
-                  if(first_page()) {
-                    break;
-                  }
-                }
-              } else {
-                printf("Error: the password is invalid");
-                break;
-              }
-            } else {
-              printf("Error: the username is invalid");
-              break;
-            }
-          } else if (choice == 2) {
-            break;
-          } else {
-            system("CLS");
-            printf("Error: Invalid choice option");
-            break;
-          }
-        }
-      } else {
-        registration_form();
-      }
-    } else {
-      printf("Invalid phone number.\n");
-    }
-  } else if(choice == 2) {
-    return true;
+bool before_navigation_dashboard() {
+ exists = make_search_query();
+  if(exists) {
+    const int number = counting_notification();
+    printf("1. BUY BUNDLES\n");
+    printf("2. PAY BILLS\n");
+    printf("3. SEND CASH TO ANOTHER NUMBER\n");
+    printf("4. VIEW ACCOUNT DETAILS\n");
+    printf("5. VIEW BOOK INTO EVENTS\n");
+    printf("6. SERVICES\n");
+    printf("7. NOTIFICATION(%d)\n", number);
+    printf("8. EXIT\n");
+    first_page();
   } else {
-    printf("Error: invalid choice option");
-  } return 5;
+    registration_form();
+  } return true;
 }
-
-
-
 int main(int argc, char **argv[]) {
   printf("Welcome to reliable internet service provider.\n");
   map_t* user_details = map_new();
   map_ctr(user_details);
-  before_navigation_dashboard(phone_number);
+  before_navigation_dashboard(user_details);
   map_dtr(user_details);
   return 0;
 }

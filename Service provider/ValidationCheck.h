@@ -2,7 +2,7 @@
 #define VALIDATIONCHECK_H
 #include <stdbool.h>
 bool validateUsername(char *username);
-bool validatePin(char *pin);
+bool validatePassword(char *password);
 bool validateId(char *id);
 bool validateFirstName(char *first_name);
 bool validateLastName(char *last_name);
