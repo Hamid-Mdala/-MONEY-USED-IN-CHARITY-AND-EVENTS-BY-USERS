@@ -6,9 +6,8 @@
 #include "FileManager.h"
 char password[20];
 bool exists;
-char phone_number[20];
 int amount;
-bool functionalitiesAfterNavigationDashboard(int choice, char *details_field8, char *filename) {
+bool functionalitiesAfterNavigationDashboard(int choice, char *phone_number, char *filename) {
     switch (choice) {
         case 1:
             printf("You have selected to buy bundles.\n");
@@ -16,6 +15,7 @@ bool functionalitiesAfterNavigationDashboard(int choice, char *details_field8, c
             printf("2. Buy airtime bundles\n");
             printf("Enter your choice option: ");
             scanf("%d", &choice);
+            int *choicePtr1 = &choice;
             system("CLS");
             if (choice == 1) {
                 printf("You have selected to buy data bundles.\n");
@@ -23,6 +23,7 @@ bool functionalitiesAfterNavigationDashboard(int choice, char *details_field8, c
                 printf("2. For another number\n");
                 printf("Enter your choice option: ");
                 scanf("%d", &choice);
+                int *choicePtr2 = &choice;
                 system("CLS");
                 switch(choice) {
                     case 1:
@@ -32,6 +33,7 @@ bool functionalitiesAfterNavigationDashboard(int choice, char *details_field8, c
                         printf("3. SMS bundles\n");
                         printf("Enter your choice option: ");
                         scanf("%d", &choice);
+                        int *choicePtr3 = &choice;
                         system("CLS");
                         if(choice == 1) {
                             printf("You have selected to buy internet bundles.\n");
@@ -40,15 +42,16 @@ bool functionalitiesAfterNavigationDashboard(int choice, char *details_field8, c
                             printf("3. Purchase internet monthly bundle package\n");
                             printf("Enter your choice option: ");
                             scanf("%d", &choice);
+                            int *choicePtr4 = &choice;
                             system("CLS");
                             if(choice == 1) {
                                 printf("You have selected to purchase daily bundle package.\n");
                                 printf("1. Purchase internet daily bundle at MK500 for 1GB\n");
                                 printf("2. Purchase internet daily bundle at MK750 for 2GB\n");
                                 printf("3. Purchase internet daily bundle at MK1000 for 3GB\n");
-                                scanf("%d", &choice);
                                 printf("Enter your choice option: ");
                                 scanf("%d", &choice);
+                                int *choicePtr5 = &choice;
                                 system("CLS");
                                 if(choice == 1) {
                                     while(true) {
@@ -58,48 +61,37 @@ bool functionalitiesAfterNavigationDashboard(int choice, char *details_field8, c
                                         if(exists) {
                                           exists = search_for_field(password, "Query.txt");
                                           if(exists) {
-                                          	 exists = getAmountInSheet(password, "money_sheet.txt");
+                                          	 exists = getAmountInSheet(phone_number, "money_sheet.txt");
                                             if(exists) {
                                              	int extracted_amount = getAmountInSheet(password, "money_sheet.txt");
                                                 if(extracted_amount >= 500) {
-                                         			//NOW DUDUCT MONEY FROM THE ACCOUNT PLEASE
+                                         			int *deduct_amount = &extracted_amount;
+                                                    *deduct_amount -= 500;
+                                                    int *current_balance = deduct_amount; //double pointer of the current balance
+                                                	handlingNotification
+													(choicePtr1, choicePtr2, choicePtr3,
+													choicePtr4, choicePtr5, current_balance, deduct_amount);
+                                                    break;
                                                 } else {
                                                 	printf("Error: Insufficient funds in your acount.\n");
                                                 }
-                                             } else {
-                                             	printf("Error: Failed to get amount in sheet");
-                                             }
+                                            } else {
+                                            	printf("Error: Unable to get the your current amount from your money balancesheet.\n");
+                                            }
                                           } else {
-                                            printf("Error: the phone number doesn't belong to you");
+                                            printf("Error: Invalid pin.\n");
 										  }
                                         } else {
                                         	printf("Error: Invalid phone number is entered.\n");
                                         }
-                                            		printf("Error: Insufficient funds in your account.\n");
-                                            		break;
-                                            	} else {
-                                            		//deduct 500 from the account
-                                            		amount -= 500;
-                                                	//save details into the files
-                                                	exists = search_for_field(stored_field1);
-                                            		save_details_into_a_sheet("money_sheet.txt", stored_field1, amount);
-                                            	}
-                                            	//notification of bought bundles
-                                            	notification(choice, "bundles_internet", stored_field1);
-                                        		break;
-                                    		} else {
-                                          		system("CLS");
-                                        		printf("Error: the password is invalid.\n");
-											}
-                                        }
-                                   }
+                                    }
                                 } else if(choice == 2) {
                                   while(true) {
                                     printf("Enter your password to make payment: ");
-                                    scanf("%s", pin);
-                                    exists = authenticate(stored_field1, pin);
+                                    scanf("%s", password);
+                                    exists = validatePassword(password);
                                     if(exists) {
-                                      notification(choice, "bundles_internet", stored_field1);
+                                      notification(choice, "bundles_internet", password);
                                     }
                                   }
                                 } else if(choice == 3) {

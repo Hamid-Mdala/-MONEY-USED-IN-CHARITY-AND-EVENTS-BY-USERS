@@ -5,5 +5,5 @@
 #ifndef IMPLEMETATIONAFTERSEARCH_H
 #define IMPLEMETATIONAFTERSEARCH_H
 #include <stdbool.h>
-bool functionalitiesAfterNavigationDashboard(int count, char *details_field8, char *filename);
+bool functionalitiesAfterNavigationDashboard(int count, char *phone_number, char *filename);
 #endif //IMPLEMETATIONAFTERSEARCH_H

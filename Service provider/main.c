@@ -25,6 +25,9 @@ bool make_search_query() {
     } return false;
   }return true;
 }
+
+
+
 void registration_form() {
   //registration_form
   char username[100];
@@ -36,7 +39,10 @@ void registration_form() {
     char pin[100];
     printf("Enter password: ");
     scanf("%s", pin);
-    exists = validatePin(pin);
+    exists =
+
+
+
     if(exists) {
       char id[100];
       printf("Enter ID: ");
