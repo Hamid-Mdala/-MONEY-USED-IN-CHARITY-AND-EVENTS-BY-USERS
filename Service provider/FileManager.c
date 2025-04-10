@@ -3,6 +3,7 @@
 #include "map.h"
 #include <string.h>
 #include <stdlib.h>
+#include "Time.h"
 int count_number_of_fields;
 int notification_count = 0;
 int count_fields_in_file(char *filename) {
@@ -37,20 +38,8 @@ int count_fields_in_file(char *filename) {
         } fclose(Fptr3);
     } fclose(Fptr);
 }
-bool make_the_query(char *username) {
-  FILE *fptr = fopen("MakeQuery.txt", "a");
-  if(fptr == NULL) {
-    printf("Error: Unable to open the file MakeQuery\n");
-    return false;
-  } else {
-    char line[200];
-    fprintf(fptr,"Service provider,User_%s", username);
-    fclose(fptr);
-    printf("You have successfully saved the username into the Query file");
-  } return true;
-}
 bool register_user
-    (char *username, char *pin, char *id, char *first_name,
+    (char *username, char *password, char *id, char *first_name,
 	char *last_name, char *gender, char *dob, char *phone_number) {
     FILE *Fptr = fopen("user_data.txt", "a");
     if (Fptr == NULL) {
@@ -58,10 +47,9 @@ bool register_user
         exit(1);
     } else {
         fprintf
-          (Fptr, "%s,%s,%s,%s,%s,%s,%s,%s", username, pin, id, first_name, last_name, gender, dob, phone_number);
+          (Fptr, "%s,%s,%s,%s,%s,%s,%s,%s", username, password, id, first_name, last_name, gender, dob, phone_number);
         fclose(Fptr);
         printf("Successfully added details in the user data file\n");
-        make_the_query(username);
         return true;
     }
     FILE *Fptr2 = fopen("Query.txt", "a");
@@ -69,7 +57,7 @@ bool register_user
     	printf("Error: Unable to open the Query file\n");
         exit(1);
     } else {
-      	fprintf(Fptr2, "service provider,%s", username);
+      	fprintf(Fptr2, "service_provider,%s", phone_number);
         fclose(Fptr2);
         printf("Successfully added details in the Query file\n");
         return true;
@@ -182,6 +170,7 @@ bool search_for_field(const char *details_field8, char *filename) {
 int getAmountInSheet(char *details_field8, char *filename) {
     char *get_phone_number;
     char *get_amount_number;
+    //two files one is money sheet and the other is airtime sheet
     bool exists = search_for_field(details_field8, filename);
 	if(exists) {
     	FILE *Fptr = fopen(filename, "r");
@@ -200,7 +189,7 @@ int getAmountInSheet(char *details_field8, char *filename) {
     } return false;
 }
 bool handlingNotification(int *choicePtr1, int *choicePtr2, int *choicePtr3,
-int *choicePtr4, int *choicePtr5, int *current_balance, int *deducted_amount) {
+int *choicePtr4, int *current_balance, int *deducted_amount) {
   	const map_element_t result;
     char *username = result.value->details_field1;
     FILE *Fptr = fopen("notification_history.txt", "a");
@@ -210,51 +199,38 @@ int *choicePtr4, int *choicePtr5, int *current_balance, int *deducted_amount) {
     } else {
       FILE *fptr = fopen("notification_of_purchased_bundles.txt", "w");
       FILE *otherFptr = fopen("notification_for_deduction_of_money", "w");
-      if(*choicePtr1 == 1 && *choicePtr2 == 1 && *choicePtr3 == 1 && *choicePtr4 == 1 && *choicePtr5 == 1) {
+      if(*choicePtr1 == 1 && *choicePtr2 == 1 && *choicePtr3 == 1 && *choicePtr4 == 1) {
       	printf("Dear Customer, Your request is being processed. You will receive a confirmation message shortly");
         fprintf(fptr, "You have successfully purchased 1GB of daily internet bundles");
  		fprintf(otherFptr, "Dear Customer, Your current balance is: %d\n"
-		"\t\tThe amount removed from your account was: %d", *current_balance, *deducted_amount);
-      } else if(choicePtr2 == 2 && strcmp(type_of_service, "bundles_internet")) {
-        printf("you have successufully purchased 2GB of internet bundles");
-        fprintf(Fptr, "%s, you have successfully purchased 2GB of internet bundles", result.value->details_field1);
-      } else if(choice == 3 && strcmp(type_of_service, "bundles_internet")) {
-        printf("you have successfully purchased 3GB of internet bundles");
-        fprintf(Fptr, "%s, you have successfully purchased 3GB of internet bundles", result.value->details_field1);
-      } else if(choice == 1 && strcmp(type_of_service, "bundles_voice")) {
-        printf("you have successfully purchased 1GB of voice bundles");
-        fprintf(Fptr, "%s, you have successfully purchased 1GB of voice bundles", result.value->details_field1);
-      } else if(choice == 2 && strcmp(type_of_service, "bundles_voice")) {
-        printf("you have successfully purchased 2GB of voice bundles");
-        fprintf(Fptr, "%s, you have successfully purchased 2GB of voice bundles", result.value->details_field1);
-      } else if(choice == 3 && strcmp(type_of_service, "bundles_voice")) {
-        printf("you have successfully purchased 3GB of voice bundles");
-        fprintf(Fptr, "%s, you have successfully purchased 3GB of voice bundles", result.value->details_field1);
-      } else if(choice == 1 && strcmp(type_of_service, "bundles_sms")) {
-        printf("you have successfully purchased 1GB of sms bundles");
-        fprintf(Fptr, "%s, you have successfully purchased 1GB of sms bundles", result.value->details_field1);
-      } else if(choice == 2 && strcmp(type_of_service, "bundles_sms")) {
-        printf("you have successfully purchased 2GB of sms bundles");
-      } else if(choice == 3 && strcmp(type_of_service, "bundles_sms")) {
-        printf("you have successfully purchased 3GB of sms bundles");
-        fprintf(Fptr, "%s, you have successfully purchased 3GB of sms bundles", result.value->details_field1);
-      } else if(choice == 1 && strcmp(type_of_service, "bundles_airtime")) {
-        printf("you have successfully purchased K500 of airtime bundles");
-        fprintf(Fptr, "%s, you have successfully purchased K500 of airtime bundles", result.value->details_field1);
-      } else if(choice == 2 && strcmp(type_of_service, "bundles_airtime")) {
-        printf("you have successfully purchased K750 of airtime bundles");
-        fprintf(Fptr, "%s, you have successfully purchased K750 of airtime bundles", result.value->details_field1);
-      } else if(choice == 3 && strcmp(type_of_service, "bundles_airtime")) {
-        printf("you have successfully purchased K1000 of airtime bundles");
-        fprintf(Fptr, "%s, you have successfully purchased K1000 of airtime bundles", result.value->details_field1);
-      } else if(choice == 6 && strcmp(type_of_service, "agent_send_cash")) {
-        printf("you have successfully sent money to %s", username);
-        fprintf(Fptr, "you have successfully sent money to %s", username);
-       } else if(choice == 7) {
-
-       }//find time
-       fprintf(Fptr, "You successfully purchased 1GB of daily internet bundles on \nYour current balance was: %d\n"
-		"\t\tThe amount removed that day from your account was: %d", day, *current_balance, *deducted_amount);
+		"\t\tThe amount of money removed from your account is: %d", *current_balance, *deducted_amount);
+      }
+      else if(*choicePtr1 == 1 && *choicePtr2 == 1 && *choicePtr3 == 1 && *choicePtr4 == 1 && *choicePtr5 == 2) {
+        printf("Dear Customer, Your request is beign processed. You will receive a cornrirmation message shortly");
+        fprintf(fptr, "You have successfully purchased 2GB of daily internet bundles");
+        fprintf(otherFptr, "Dear Customer, Your current balance is: %d\n"
+        "\t\tThe amount of money removed from your account is: %d", *current_balance, *deducted_amount);
+      }
+      else if(*choicePtr1 == 1 && *choicePtr2 == 1 && *choicePtr3 == 1 && *choicePtr4 == 1 && *choicePtr5 == 3) {
+        printf("Dear Customer, Your request is beign processed. You will receive a cornrirmation message shortly");
+        fprintf(fptr, "You have successfully purchased 3GB of daily internet bundles");
+        fprintf(otherFptr, "Dear Customer, Your current balance is: %d\n"
+        "\t\tThe amount of money removed from your account is: %d", *current_balance, *deducted_amount);
+      }
+      else if(*choicePtr1 == 1 && *choicePtr2 == 1 && *choicePtr3 == 1 && *choicePtr4 == 2 && *choicePtr5 == 1) {
+        printf("Dear Customer, Your request is beign processed. You will receive a cornrirmation message shortly");
+        fprintf(fptr, "You have successfully purchased 1GB of weekly internet bundles");
+        fprintf(otherFptr, "Dear Customer, Your current balance is: %d\n"
+        "\t\tThe amount of money removed from your account is: %d", *current_balance, *deducted_amount);
+      } else if(*choicePtr1 == 1 && *choicePtr2 == 1 && *choicePtr3 == 1 && *choicePtr4 == 2 && *choicePtr5 == 2) {
+        printf("Dear Customer, Your request is beign processed. You will receive a cornrirmation message shortly");
+        fprintf(fptr, "You have successfully purchased 1GB of monthly internet bundles");
+        fprintf(otherFptr, "Dear Customer, Your current balance is: %d\n"
+        "\t\tThe amount of money removed from your account is: %d", *current_balance, *deducted_amount);
+      } else if()
+       char *getTime = findTime();
+       fprintf(Fptr, "You successfully purchased 1GB of daily internet bundles on %s\nYour current balance was: %d\n"
+		"\t\tThe amount removed that day from your account was: %d", getTime ,*current_balance, *deducted_amount);
     }  return true;
 }
 bool handles_the_money_balancing_sheet(char *field_name) {
